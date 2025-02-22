@@ -4,13 +4,13 @@ export class Heroe {
   id: string = uuid();
   name: string;
   alias: string;
-  powers: string[];
-  weaknesses: string[];
+  power: string;
+  weakness: string;
 
-  constructor(name: string, alias: string, powers: string[], weaknesses: string[]) {
+  constructor(name: string, alias: string, power: string, weakness: string) {
     this.name = name;
     this.alias = alias;
-    this.powers = powers;
-    this.weaknesses = weaknesses;
+    this.power = power;
+    this.weakness = weakness;
   }
 }

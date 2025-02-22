@@ -1,3 +1,19 @@
-<p>
-  heroes works!
-</p>
+<div class="container">
+  <div class="actions">
+    <form>
+      <mat-form-field class="">
+        <mat-label>Buscar por nombre</mat-label>
+        <input matInput placeholder="Ejemplo: Ironman" [formControl]="searchInput">
+      </mat-form-field>
+    </form>
+
+    <button mat-raised-button (click)="handleCreate()" class="">
+      Crear
+    </button>
+  </div>
+
+  <app-heroes-table [dataSource]="heroesListDataSource()" [displayedColumns]="displayedColumns"
+    (actionEvent)="handleActionEvent($event)"></app-heroes-table>
+
+  <app-custom-paginator [length]="pageEvent().length" (pageEvent)="handlePageEvent($event)"></app-custom-paginator>
+</div>

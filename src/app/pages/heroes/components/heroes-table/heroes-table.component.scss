@@ -1,0 +1,19 @@
+
+.table{
+  margin-bottom: 16px;
+
+  &__row{
+    :hover {
+      background: whitesmoke;
+    }
+  }
+
+  &__actions{
+    &--container{
+      display: flex;
+      justify-content: space-between;
+      max-width: 100px;
+      width: 100%;
+    }
+  }
+}

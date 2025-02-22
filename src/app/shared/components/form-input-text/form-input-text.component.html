@@ -1,0 +1,7 @@
+<mat-form-field>
+  <mat-label>{{label}}</mat-label>
+  <input matInput [placeholder]="placeholder" [formControl]="formControl" />
+  @if (formControl.invalid && formControl.touched) {
+  <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

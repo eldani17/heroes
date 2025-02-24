@@ -6,5 +6,5 @@ export interface IApiService<T> {
   getByName(url: string, name: string): Observable<T[]>;
   post(url: string, body: T): Observable<T>;
   put(url: string, body: T): Observable<T>;
-  delete(url: string): Observable<void>;
+  delete(url: string): Observable<T[]>;
 }

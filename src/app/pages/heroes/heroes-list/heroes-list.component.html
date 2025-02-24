@@ -1,4 +1,5 @@
 <div class="container">
+
   <div class="actions">
     <form>
       <mat-form-field class="">
@@ -11,9 +12,12 @@
       Crear
     </button>
   </div>
-
+  @if(heroesListDataSource().length > 0){
   <app-heroes-table [dataSource]="heroesListDataSource()" [displayedColumns]="displayedColumns"
     (actionEvent)="handleActionEvent($event)"></app-heroes-table>
 
   <app-custom-paginator [length]="pageEvent().length" (pageEvent)="handlePageEvent($event)"></app-custom-paginator>
+  } @else{
+  <h2 class="mat-title-large">No se encontraron heroes</h2>
+  }
 </div>

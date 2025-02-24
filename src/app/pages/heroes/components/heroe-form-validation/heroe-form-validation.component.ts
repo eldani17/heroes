@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
+import { UppercaseInputDirective } from '../../../../shared/directives';
 import { Heroe } from '../../../../shared/models';
 
 @Component({
@@ -11,7 +12,7 @@ import { Heroe } from '../../../../shared/models';
   templateUrl: './heroe-form-validation.component.html',
   styleUrls: ['./heroe-form-validation.component.scss'],
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, ReactiveFormsModule]
+  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, ReactiveFormsModule, UppercaseInputDirective]
 })
 export class HeroeFormValidationComponent implements OnInit {
   @Input() data!: Partial<Heroe>;
@@ -32,10 +33,10 @@ export class HeroeFormValidationComponent implements OnInit {
 
   private createForm(): void {
     this.form = this.formBuilder.group({
-      name: new FormControl(this.data?.name || '', [Validators.required]),
-      alias: new FormControl(this.data?.alias || '', [Validators.required]),
-      power: new FormControl(this.data?.power || '', [Validators.required]),
-      weakness: new FormControl(this.data?.weakness || '', [Validators.required]),
+      name: new FormControl(this.data?.name || '', { validators: [Validators.required], updateOn: 'change' }),
+      alias: new FormControl(this.data?.alias || '', { validators: [Validators.required], updateOn: 'change' }),
+      power: new FormControl(this.data?.power || '', { validators: [Validators.required], updateOn: 'change' }),
+      weakness: new FormControl(this.data?.weakness || '', { validators: [Validators.required], updateOn: 'change' }),
     });
   }
 }

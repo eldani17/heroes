@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 
-import { TypeActionsTable } from '../../../../shared/enums/type-actions-table.enum';
+import { TypeActionsTable } from '../../../../shared/enums';
 import { IEventTable } from '../../../../shared/interfaces';
 import { Heroe } from '../../../../shared/models';
 

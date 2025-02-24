@@ -1,28 +1,29 @@
 <form [formGroup]="form" class="form">
   <mat-form-field>
     <mat-label>Nombre</mat-label>
-    <input matInput placeholder="Tony Stark" formControlName="name" (blur)="updateErrorMessage('name')" />
+    <input matInput uppercaseInput placeholder="Tony Stark" formControlName="name"
+      (blur)="updateErrorMessage('name')" />
     @if (form.get('name')?.invalid && form.get('name')?.touched) {
     <mat-error>{{ getErrorMessage('name') }}</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Alias</mat-label>
-    <input matInput placeholder="IronMan" formControlName="alias" required />
+    <input matInput uppercaseInput placeholder="IronMan" formControlName="alias" required />
     @if (form.get('alias')?.invalid && form.get('alias')?.touched) {
     <mat-error>{{ getErrorMessage('alias') }}</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Tipo de poder</mat-label>
-    <input matInput placeholder="Inteligencia" formControlName="power" required />
+    <input matInput uppercaseInput placeholder="Inteligencia" formControlName="power" required />
     @if (form.get('power')?.invalid && form.get('power')?.touched) {
     <mat-error>{{ getErrorMessage('power') }}</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Tipo de debilidad</mat-label>
-    <input matInput placeholder="Fuerza" formControlName="weakness" required />
+    <input matInput uppercaseInput placeholder="Fuerza" formControlName="weakness" required />
     @if (form.get('weakness')?.invalid && form.get('weakness')?.touched) {
     <mat-error>{{ getErrorMessage('weakness') }}</mat-error>
     }

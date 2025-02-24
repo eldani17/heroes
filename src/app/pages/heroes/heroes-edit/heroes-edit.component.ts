@@ -1,7 +1,8 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { Subject, takeUntil } from 'rxjs';
 import { LocalDbService } from '../../../core/services';
 import { Heroe } from '../../../shared/models';
 import { HeroeFormValidationComponent } from '../components/heroe-form-validation/heroe-form-validation.component';
@@ -25,12 +26,13 @@ import { HeroeFormValidationComponent } from '../components/heroe-form-validatio
   standalone: true,
   imports: [MatButtonModule, HeroeFormValidationComponent]
 })
-export class HeroesEditComponent implements OnInit {
+export class HeroesEditComponent implements OnInit, OnDestroy {
   readonly router = inject(Router);
   readonly heroesService = inject(LocalDbService);
   readonly activatedRoute = inject(ActivatedRoute);
 
   @ViewChild('formValidation') formValidation!: HeroeFormValidationComponent;
+  private destroy$: Subject<void> = new Subject();
 
   readonly data = signal<Heroe | undefined>(undefined);
   readonly isLoading = signal<boolean>(true);
@@ -39,12 +41,12 @@ export class HeroesEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.activatedRoute.snapshot.paramMap.get('id')!;
-    console.log("id", this.id);
-    this.heroesService.getById(this.id).subscribe({
+    this.heroesService.getById(this.id).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: (heroe) => {
         this.data.set(heroe);
         this.isLoading.set(false);
-        console.log(this.data());
       },
       error: (error) => {
         this.isLoading.set(false);
@@ -63,5 +65,10 @@ export class HeroesEditComponent implements OnInit {
         console.error(error);
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,81 +1,128 @@
 import { TestBed } from '@angular/core/testing';
 import { Heroe } from '../../../shared/models';
+import { LocalHttpInterceptor } from '../../interceptors/local-interceptor-observable/local-http.interceptor';
 import { LocalDbService } from './local-db.service';
 
 describe('LocalDbService', () => {
   let service: LocalDbService;
+  let interceptor: LocalHttpInterceptor;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LocalDbService],
+      providers: [
+        LocalDbService,
+        LocalHttpInterceptor,
+      ],
     });
+
     service = TestBed.inject(LocalDbService);
+    interceptor = TestBed.inject(LocalHttpInterceptor);
+  });
+
+  afterEach(() => {
+    service['heroesList'] = [];
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return all heroes on getAll', (done) => {
-    service.getAll('').subscribe((heroes) => {
-      expect(heroes.length).toBe(10); // Verifica que se devuelvan todos los héroes
-      done();
+  describe('getAll', () => {
+    it('should return an empty array if no heroes are added', (done) => {
+      service.getAll('url').subscribe((heroes) => {
+        expect(heroes).toEqual([]);
+        done();
+      });
+    });
+
+    it('should return the list of heroes', (done) => {
+      const heroe = new Heroe('Superman', 'Clark Kent', 'Super fuerza', 'Kryptonita');
+      service['heroesList'] = [heroe];
+
+      service.getAll('url').subscribe((heroes) => {
+        expect(heroes).toEqual([heroe]);
+        done();
+      });
     });
   });
 
-  it('should return a hero by id on getById', (done) => {
-    const heroId = service['heroesList'][0].id; // Obtén el ID del primer héroe
-    service.getById(heroId).subscribe((hero) => {
-      expect(hero.id).toBe(heroId); // Verifica que el héroe devuelto tenga el ID correcto
-      done();
+  describe('getById', () => {
+    it('should return the hero with the specified id', (done) => {
+      const heroe = new Heroe('Superman', 'Clark Kent', 'Super fuerza', 'Kryptonita');
+      service['heroesList'] = [heroe];
+
+      service.getById(heroe.id).subscribe((result) => {
+        expect(result).toEqual(heroe);
+        done();
+      });
     });
   });
 
-  it('should return heroes by name on getByName', (done) => {
-    const name = 'Ironman';
-    service.getByName('', name).subscribe((heroes) => {
-      expect(heroes.length).toBe(1); // Verifica que solo haya un héroe con el nombre "Ironman"
-      expect(heroes[0].name).toBe('Ironman'); // Verifica que el nombre del héroe sea correcto
-      done();
+  describe('getByName', () => {
+    it('should return heroes whose names match the search term', (done) => {
+      const heroe1 = new Heroe('Superman', 'Clark Kent', 'Super fuerza', 'Kryptonita');
+      const heroe2 = new Heroe('Batman', 'Bruce Wayne', 'Inteligencia', 'Falta de superpoderes');
+      service['heroesList'] = [heroe1, heroe2];
+
+      service.getByName('url', 'man').subscribe((heroes) => {
+        expect(heroes).toEqual([heroe1, heroe2]);
+        done();
+      });
+    });
+
+    it('should return an empty array if no heroes match the search term', (done) => {
+      const heroe = new Heroe('Superman', 'Clark Kent', 'Super fuerza', 'Kryptonita');
+      service['heroesList'] = [heroe];
+
+      service.getByName('url', 'spiderman').subscribe((heroes) => {
+        expect(heroes).toEqual([]);
+        done();
+      });
     });
   });
 
-  it('should add a new hero on post', (done) => {
-    const newHero: Partial<Heroe> = {
-      name: 'Black Panther',
-      alias: 'T\'Challa',
-      power: 'Agilidad',
-      weakness: 'Vibranium',
-    };
+  describe('post', () => {
+    it('should add a new hero to the list', (done) => {
+      const newHeroe: Partial<Heroe> = {
+        name: 'Superman',
+        alias: 'Clark Kent',
+        power: 'Super fuerza',
+        weakness: 'Kryptonita',
+      };
 
-    service.post('', newHero).subscribe((hero) => {
-      expect(hero.name).toBe('Black Panther'); // Verifica que el héroe se haya creado correctamente
-      expect(service['heroesList'].length).toBe(11); // Verifica que la lista de héroes haya aumentado
-      done();
+      service.post('url', newHeroe).subscribe((heroe) => {
+        expect(heroe).toBeInstanceOf(Heroe);
+        expect(service['heroesList']).toContain(heroe);
+        done();
+      });
     });
   });
 
-  it('should update a hero on put', (done) => {
-    const heroId = service['heroesList'][0].id; // Obtén el ID del primer héroe
-    const updatedHero: Heroe = {
-      id: heroId,
-      name: 'Ironman Updated',
-      alias: 'Tony Stark',
-      power: 'Tecnología',
-      weakness: 'Ego',
-    };
+  describe('put', () => {
+    it('should update an existing hero', (done) => {
+      const heroe = new Heroe('Superman', 'Clark Kent', 'Super fuerza', 'Kryptonita');
+      service['heroesList'] = [heroe];
 
-    service.put(heroId, updatedHero).subscribe((hero) => {
-      expect(hero.name).toBe('Ironman Updated'); // Verifica que el héroe se haya actualizado correctamente
-      done();
+      const updatedHeroe: Heroe = { ...heroe, alias: 'Kal-El' };
+
+      service.put(heroe.id, updatedHeroe).subscribe((result) => {
+        expect(result.alias).toBe('Kal-El');
+        expect(service['heroesList'][0].alias).toBe('Kal-El');
+        done();
+      });
     });
   });
 
-  // it('should delete a hero on delete', (done) => {
-  //   const heroId = service['heroesList'][0].id; // Obtén el ID del primer héroe
-  //   service.delete(heroId).subscribe(() => {
-  //     expect(service['heroesList'].length).toBe(9); // Verifica que la lista de héroes haya disminuido
-  //     done();
-  //   });
-  // }, 10000); // Aumenta el tiempo de espera a 10 segundos
+  describe('delete', () => {
+    it('should remove the hero with the specified id', (done) => {
+      const heroe = new Heroe('Superman', 'Clark Kent', 'Super fuerza', 'Kryptonita');
+      service['heroesList'] = [heroe];
+
+      service.delete(heroe.id).subscribe((heroes) => {
+        expect(heroes).toEqual([]);
+        expect(service['heroesList']).toEqual([]);
+        done();
+      });
+    });
+  });
 });

@@ -1,8 +1,9 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 
+import { Subject, takeUntil } from 'rxjs';
 import { LocalDbService } from '../../../core/services';
 import { Heroe } from '../../../shared/models';
 import { HeroeFormValidationComponent } from '../components/heroe-form-validation/heroe-form-validation.component';
@@ -24,16 +25,19 @@ import { HeroeFormValidationComponent } from '../components/heroe-form-validatio
   standalone: true,
   imports: [MatButtonModule, HeroeFormValidationComponent]
 })
-export class HeroesCreateComponent {
+export class HeroesCreateComponent implements OnDestroy {
   readonly formBuilder = inject(FormBuilder);
   readonly router = inject(Router);
   readonly heroesService = inject(LocalDbService);
 
   @ViewChild('formValidation') formValidation!: HeroeFormValidationComponent;
+  private destroy$: Subject<void> = new Subject();
 
   public handleCreate(): void {
     const heroe: Partial<Heroe> = this.formValidation.form.value;
-    this.heroesService.post('', heroe).subscribe({
+    this.heroesService.post('', heroe).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
       next: () => {
         this.router.navigate(['heroes/list']);
       },
@@ -41,5 +45,10 @@ export class HeroesCreateComponent {
         console.error(error);
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

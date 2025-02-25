@@ -1,15 +1,15 @@
 # stage 1: build
-FROM node:18-alpine as build
+FROM node:18-alpine AS build
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm cache clean --force && npm install
 
 COPY . .
 
-RUN npm run build --production
+RUN npm run build
 
 # stage 2: serve
 FROM nginx:alpine

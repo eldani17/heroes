@@ -1,31 +1,30 @@
 <form [formGroup]="form" class="form">
   <mat-form-field>
     <mat-label>Nombre</mat-label>
-    <input matInput uppercaseInput placeholder="Tony Stark" formControlName="name"
-      (blur)="updateErrorMessage('name')" />
-    @if (form.get('name')?.invalid && form.get('name')?.touched) {
-    <mat-error>{{ getErrorMessage('name') }}</mat-error>
+    <input matInput uppercaseInput placeholder="Tony Stark" formControlName="name" required />
+    @if(form.get('name')?.hasError('required')) {
+    <mat-error>El campo nombre es requerido</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Alias</mat-label>
     <input matInput uppercaseInput placeholder="IronMan" formControlName="alias" required />
-    @if (form.get('alias')?.invalid && form.get('alias')?.touched) {
-    <mat-error>{{ getErrorMessage('alias') }}</mat-error>
+    @if(form.get('alias')?.hasError('required')) {
+    <mat-error>El campo alias es requerido</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Tipo de poder</mat-label>
     <input matInput uppercaseInput placeholder="Inteligencia" formControlName="power" required />
-    @if (form.get('power')?.invalid && form.get('power')?.touched) {
-    <mat-error>{{ getErrorMessage('power') }}</mat-error>
+    @if(form.get('power')?.hasError('required')) {
+    <mat-error>El campo poder es requerido</mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Tipo de debilidad</mat-label>
     <input matInput uppercaseInput placeholder="Fuerza" formControlName="weakness" required />
-    @if (form.get('weakness')?.invalid && form.get('weakness')?.touched) {
-    <mat-error>{{ getErrorMessage('weakness') }}</mat-error>
+    @if(form.get('weakness')?.hasError('required')) {
+    <mat-error>El campo fuerza es requerido</mat-error>
     }
   </mat-form-field>
 </form>

@@ -25,12 +25,6 @@ export class HeroeFormValidationComponent implements OnInit {
     this.createForm();
   }
 
-  public updateErrorMessage(nameControl: string): void { }
-
-  public getErrorMessage(property: string): string {
-    return `error ${property}`;
-  }
-
   private createForm(): void {
     this.form = this.formBuilder.group({
       name: new FormControl(this.data?.name || '', { validators: [Validators.required], updateOn: 'change' }),

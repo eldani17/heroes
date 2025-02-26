@@ -4,4 +4,9 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+
+  &__actions-button{
+    display: flex;
+    gap: 16px;
+  }
 }

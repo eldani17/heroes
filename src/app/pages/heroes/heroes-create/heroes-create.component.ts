@@ -15,9 +15,14 @@ import { HeroeFormValidationComponent } from '../components/heroe-form-validatio
       <section class="section-create">
         <h3>Crear heroe</h3>
         <app-heroe-form-validation #formValidation></app-heroe-form-validation>
-        <button mat-raised-button (click)="handleCreate()" [disabled]="formValidation.form.invalid">
-          Guardar
-        </button>
+        <div class="section-create__actions-button">
+          <button mat-button (click)="handleCancel()">
+            Cancelar
+          </button>
+          <button mat-raised-button (click)="handleCreate()" [disabled]="formValidation.form.invalid">
+            Guardar
+          </button>
+        </div>
       </section>
     </div>
   `,
@@ -45,6 +50,9 @@ export class HeroesCreateComponent implements OnDestroy {
         console.error(error);
       }
     })
+  }
+  handleCancel(): void {
+    this.router.navigate(['heroes/list']);
   }
 
   ngOnDestroy(): void {
